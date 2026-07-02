@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Placement Notifications</title>
+
+<style>
+body{
+    font-family: Arial, Helvetica, sans-serif;
+    background:#f4f6f9;
+    margin:0;
+    padding:30px;
+}
+
+.container{
+    max-width:900px;
+    margin:auto;
+    background:white;
+    padding:30px;
+    border-radius:10px;
+    box-shadow:0 0 10px rgba(0,0,0,.1);
+}
+
+h1{
+    margin-top:0;
+}
+
+.controls{
+    display:flex;
+    gap:20px;
+    margin:20px 0;
+}
+
+.field{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+}
+
+input,select{
+    padding:10px;
+    font-size:16px;
+    margin-top:5px;
+}
+
+.group{
+    margin-top:30px;
+}
+
+.group h2{
+    background:#007bff;
+    color:white;
+    padding:10px;
+    border-radius:5px;
+}
+
+ul{
+    list-style:none;
+    padding:0;
+}
+
+li{
+    background:#f8f8f8;
+    padding:15px;
+    margin:10px 0;
+    border-left:5px solid #007bff;
+}
+
+.message{
+    font-weight:bold;
+}
+
+.meta{
+    color:gray;
+    font-size:14px;
+    margin-top:5px;
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+<h1>Placement Notifications</h1>
+
+<p>Enter your ID and view notifications.</p>
+
+<div class="controls">
+
+<div class="field">
+<label>User ID</label>
+<input type="text" id="userId" placeholder="Enter your ID">
+</div>
+
+<div class="field">
+<label>Notification Type</label>
+<select id="type">
+<option>All</option>
+<option>Result</option>
+<option>Placement</option>
+<option>Event</option>
+</select>
+</div>
+
+</div>
+
+<p id="summary">Enter your ID to personalize the view.</p>
+
+<div id="notifications"></div>
+
+</div>
+
+<script>
+
+const notifications=[
+
+{
+ID:'d146095a',
+Type:'Result',
+Message:'mid-sem',
+Timestamp:'2026-04-22 17:51:30'
+},
+
+{
+ID:'b283218f',
+Type:'Placement',
+Message:'CSX Corporation hiring',
+Timestamp:'2026-04-22 17:51:18'
+},
+
+{
+ID:'81589ada',
+Type:'Event',
+Message:'farewell',
+Timestamp:'2026-04-22 17:51:06'
+},
+
+{
+ID:'000513a',
+Type:'Result',
+Message:'mid-sem',
+Timestamp:'2026-04-22 17:50:54'
+},
+
+{
+ID:'ea836726',
+Type:'Result',
+Message:'project-review',
+Timestamp:'2026-04-22 17:50:42'
+},
+
+{
+ID:'003cb427',
+Type:'Result',
+Message:'external',
+Timestamp:'2026-04-22 17:50:30'
+},
+
+{
+ID:'e5c4ff20',
+Type:'Result',
+Message:'project-review',
+Timestamp:'2026-04-22 17:50:18'
+},
+
+{
+ID:'1cfce5ee',
+Type:'Event',
+Message:'tech-fest',
+Timestamp:'2026-04-22 17:50:06'
+},
+
+{
+ID:'cf2885a6',
+Type:'Result',
+Message:'project-review',
+Timestamp:'2026-04-22 17:49:54'
+},
+
+{
+ID:'8a7412bd',
+Type:'Placement',
+Message:'Advanced Micro Devices Inc. hiring',
+Timestamp:'2026-04-22 17:49:42'
+}
+
+];
+
+const select=document.getElementById("type");
+const userInput=document.getElementById("userId");
+
+select.addEventListener("change",displayNotifications);
+userInput.addEventListener("input",updateSummary);
+
+function updateSummary(){
+
+const id=userInput.value;
+
+document.getElementById("summary").innerHTML=id?
+`Showing updates for ${id}`:
+"Enter your ID to personalize the view.";
+
+}
+
+function displayNotifications(){
+
+const value=select.value;
+
+const container=document.getElementById("notifications");
+
+container.innerHTML="";
+
+let filtered=value==="All"?
+notifications:
+notifications.filter(n=>n.Type===value);
+
+const groups={};
+
+filtered.forEach(n=>{
+
+if(!groups[n.Type]) groups[n.Type]=[];
+
+groups[n.Type].push(n);
+
+});
+
+const types=value==="All"?
+["Result","Placement","Event"]:
+[value];
+
+types.forEach(type=>{
+
+const section=document.createElement("div");
+section.className="group";
+
+section.innerHTML=`<h2>${type}</h2>`;
+
+const list=document.createElement("ul");
+
+(groups[type]||[]).forEach(item=>{
+
+const li=document.createElement("li");
+
+li.innerHTML=`
+<div class="message">${item.Message}</div>
+<div class="meta">${item.Timestamp}</div>
+`;
+
+list.appendChild(li);
+
+});
+
+if(list.children.length===0){
+
+section.innerHTML+=`<p>No ${type} notifications.</p>`;
+
+}else{
+
+section.appendChild(list);
+
+}
+
+container.appendChild(section);
+
+});
+
+}
+
+displayNotifications();
+
+</script>
+
+</body>
+</html>
